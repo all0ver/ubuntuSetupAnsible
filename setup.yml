@@ -14,3 +14,18 @@
     - name: Remap Caps Lock to Escape (for vim) via GNOME Tweaks
       command: gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']"
       # rempas Caps Lock to Escape, installing GNOME Tweaks is not necessary, because it is just graphical interface for gsettings
+    - name: Install zsh
+      apt:
+        name: zsh
+        state: present
+        update_cache: yes
+      # install zsh
+
+    - name: Set zsh as default shell
+      command: chsh -s $(which zsh)
+      when: ansible_facts['shell'] != '/bin/zsh'
+      # change shell to zsh if it is not already set
+
+    - name: Install Oh My Zsh
+      command: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    #install oh my zsh
