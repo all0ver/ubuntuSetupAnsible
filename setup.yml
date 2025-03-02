@@ -1,0 +1,16 @@
+- name: Ubuntu setup
+  hosts: localhost
+  become: yes
+
+  tasks:
+    - name: Update and upgrade
+      apt:
+        update_cache: yes
+        upgrade: dist
+        # update_cache -> apt update
+        # upgrade -> apt upgrade full-upgrade // yes-> -y
+        # so this task is equivalent to running `sudo apt update && sudo apt upgrade -full-upgrade`
+    
+    - name: Remap Caps Lock to Escape (for vim) via GNOME Tweaks
+      command: gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']"
+      # rempas Caps Lock to Escape, installing GNOME Tweaks is not necessary, because it is just graphical interface for gsettings
