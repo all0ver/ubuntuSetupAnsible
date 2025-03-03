@@ -3,41 +3,40 @@
   become: yes
 
   tasks:
-    - name: Update and upgrade
+    - name: Update and upgrade system
       apt:
         update_cache: yes
         upgrade: dist
-        # update_cache -> apt update
-        # upgrade -> apt upgrade full-upgrade // yes-> -y
-        # so this task is equivalent to running `sudo apt update && sudo apt upgrade -full-upgrade`
-    
-    - name: Remap Caps Lock to Escape (for vim) via GNOME Tweaks
+
+    - name: Remap Caps Lock to Escape (for Vim)
       command: gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']"
-      # rempas Caps Lock to Escape, installing GNOME Tweaks is not necessary, because it is just graphical interface for gsettings
-    - name: Install zsh
-      apt:
-        name: zsh
-        state: present
-        update_cache: yes
-      # install zsh
 
-    - name: Set zsh as default shell
-      command: chsh -s $(which zsh)
-      when: ansible_facts['shell'] != '/bin/zsh'
-      # change shell to zsh if it is not already set
+    - name: Restart GNOME Shell to apply keyboard changes
+      command: gnome-shell --replace &
+      async: 1
+      poll: 0
 
-    - name: Install Oh My Zsh
-      command: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-    #install oh my zsh
-
-    - name: Ensure dependencies are installed
+    - name: Install dependencies
       apt:
         name:
           - curl
           - wget
           - git
+          - zsh
         state: present
         update_cache: yes
+
+    - name: Set Zsh as default shell for current user
+      user:
+        name: "{{ ansible_user_id }}"
+        shell: /bin/zsh
+
+    - name: Install Oh My Zsh
+      shell: |
+        RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+      args:
+        executable: /bin/bash
+
     - name: Download latest Ghostty .deb package
       shell: |
         LATEST_VERSION=$(curl -s https://api.github.com/repos/ghostty-org/ghostty/releases/latest | grep "browser_download_url.*deb" | cut -d '"' -f 4)
@@ -50,12 +49,18 @@
         deb: /tmp/ghostty.deb
 
     - name: Remove temporary .deb file
-        file:
-          path: /tmp/ghostty.deb
-          state: absent
+      file:
+        path: /tmp/ghostty.deb
+        state: absent
+
+    - name: Ensure Ghostty config directory exists
+      file:
+        path: ~/.config/ghostty
+        state: directory
+        mode: '0755'
 
     - name: Copy Ghostty configuration file
       copy:
-        src: files/ghostty
-        dest: ~/.config/ghostty/config
+        src: files/ghostty/config.toml
+        dest: ~/.config/ghostty/config.toml
         mode: '0644'
