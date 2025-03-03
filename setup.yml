@@ -29,3 +29,33 @@
     - name: Install Oh My Zsh
       command: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
     #install oh my zsh
+
+    - name: Ensure dependencies are installed
+      apt:
+        name:
+          - curl
+          - wget
+          - git
+        state: present
+        update_cache: yes
+    - name: Download latest Ghostty .deb package
+      shell: |
+        LATEST_VERSION=$(curl -s https://api.github.com/repos/ghostty-org/ghostty/releases/latest | grep "browser_download_url.*deb" | cut -d '"' -f 4)
+        wget -O /tmp/ghostty.deb "$LATEST_VERSION"
+      args:
+        executable: /bin/bash
+
+    - name: Install Ghostty
+      apt:
+        deb: /tmp/ghostty.deb
+
+    - name: Remove temporary .deb file
+        file:
+          path: /tmp/ghostty.deb
+          state: absent
+
+    - name: Copy Ghostty configuration file
+      copy:
+        src: files/ghostty
+        dest: ~/.config/ghostty/config
+        mode: '0644'
