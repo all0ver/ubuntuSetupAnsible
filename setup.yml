@@ -21,6 +21,17 @@
       shell: gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']"
       become: no
 
+    - name: Register custom keybindings in GNOME
+      shell: |
+        gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "[
+          '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/',
+          '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/',
+          '/org/gnome/settings-daemon/plugins-media-keys/custom-keybindings/custom3/'
+        ]"
+      become: no
+      # Register custom keybindings in GNOME
+
+
     - name: Add keyboard shortcuts
       shell:
         gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom1 name 'Open Firefox'
@@ -28,7 +39,7 @@
         gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom1 binding '<Super>F'
 
         gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom2 name 'Open Terminal'
-        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom2 command 'ghostty'
+        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom2 command 'gnome-terminal'
         gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom2 binding '<Super>Enter'
 
         gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom3 name 'Open nautilus'
