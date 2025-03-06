@@ -6,61 +6,17 @@
     - name: Update and upgrade system
       apt:
         update_cache: yes
-        upgrade: dist
-
-    - name: Remap Caps Lock to Escape (for Vim)
-      command: gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']"
-
-    - name: Restart GNOME Shell to apply keyboard changes
-      command: gnome-shell --replace &
-      async: 1
-      poll: 0
+        # upgrade: dist
+        # not upgrade because it take long time
 
     - name: Install dependencies
       apt:
         name:
           - curl
-          - wget
           - git
           - zsh
-        state: present
-        update_cache: yes
-
-    - name: Set Zsh as default shell for current user
-      user:
-        name: "{{ ansible_user_id }}"
-        shell: /bin/zsh
-
-    - name: Install Oh My Zsh
-      shell: |
-        RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-      args:
-        executable: /bin/bash
-
-    - name: Download latest Ghostty .deb package
-      shell: |
-        LATEST_VERSION=$(curl -s https://api.github.com/repos/ghostty-org/ghostty/releases/latest | grep "browser_download_url.*deb" | cut -d '"' -f 4)
-        wget -O /tmp/ghostty.deb "$LATEST_VERSION"
-      args:
-        executable: /bin/bash
-
-    - name: Install Ghostty
-      apt:
-        deb: /tmp/ghostty.deb
-
-    - name: Remove temporary .deb file
-      file:
-        path: /tmp/ghostty.deb
-        state: absent
-
-    - name: Ensure Ghostty config directory exists
-      file:
-        path: ~/.config/ghostty
-        state: directory
-        mode: '0755'
-
-    - name: Copy Ghostty configuration file
-      copy:
-        src: files/ghostty/config.toml
-        dest: ~/.config/ghostty/config.toml
-        mode: '0644'
+          - gnome-tweaks
+    
+    - name: Remap Caps Lock to Escape
+      shell: gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']"
+"
