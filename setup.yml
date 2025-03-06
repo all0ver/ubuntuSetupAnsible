@@ -19,3 +19,4 @@
     
     - name: Remap Caps Lock to Escape
       shell: gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']"
+      become: no
