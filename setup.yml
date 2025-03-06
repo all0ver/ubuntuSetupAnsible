@@ -12,11 +12,30 @@
     - name: Install dependencies
       apt:
         name:
-          - curl
           - git
+          - gh
           - zsh
           - gnome-tweaks
     
     - name: Remap Caps Lock to Escape
       shell: gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']"
       become: no
+
+    - name: Add keyboard shortcuts
+      shell:
+        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom1 name 'Open Firefox'
+        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom1 command 'firefox'
+        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom1 binding '<Super>F'
+
+        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom2 name 'Open Terminal'
+        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom2 command 'ghostty'
+        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom2 binding '<Super>Enter'
+
+        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom3 name 'Open nautilus'
+        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom3 command 'nautilus'
+        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom3 binding '<Super>D'
+      become: no
+      # shortcuts:
+      # Super + F: Firefox
+      # Super + Enter: Terminal (ghostty)
+      # Super + D: nautilus
