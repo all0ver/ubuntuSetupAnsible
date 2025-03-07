@@ -7,7 +7,7 @@
       apt:
         update_cache: yes
         # upgrade: dist
-        # not upgrade because it take long time
+        # not upgrade because it takes long time
 
     - name: Install dependencies
       apt:
@@ -16,37 +16,44 @@
           - gh
           - zsh
           - gnome-tweaks
-    
+
     - name: Remap Caps Lock to Escape
       shell: gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']"
       become: no
+      # Remap Caps Lock to Escape key
 
     - name: Register custom keybindings in GNOME
       shell: |
         gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "[
           '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/',
-          '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/',
-          '/org/gnome/settings-daemon/plugins-media-keys/custom-keybindings/custom3/'
+          '/org/gnome/settings-daemon/plugins.media-keys/custom-keybindings/custom2/',
+          '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3/'
         ]"
       become: no
       # Register custom keybindings in GNOME
 
-
-    - name: Add keyboard shortcuts
-      shell:
+    - name: Add Firefox shortcut
+      shell: |
         gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom1 name 'Open Firefox'
         gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom1 command 'firefox'
         gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom1 binding '<Super>F'
+      become: no
 
+    - name: Add Terminal shortcut
+      shell: |
         gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom2 name 'Open Terminal'
         gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom2 command 'gnome-terminal'
         gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom2 binding '<Super>Enter'
+      become: no
 
+    - name: Add Nautilus shortcut
+      shell: |
         gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom3 name 'Open nautilus'
         gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom3 command 'nautilus'
         gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom3 binding '<Super>D'
       become: no
-      # shortcuts:
+
+      # Shortcuts:
       # Super + F: Firefox
-      # Super + Enter: Terminal (ghostty)
-      # Super + D: nautilus
+      # Super + Enter: Terminal (gnome-terminal)
+      # Super + D: Nautilus
