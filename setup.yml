@@ -22,38 +22,16 @@
       become: no
       # Remap Caps Lock to Escape key
 
-    - name: Register custom keybindings in GNOME
-      shell: |
-        gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "[
-          '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/',
-          '/org/gnome/settings-daemon/plugins.media-keys/custom-keybindings/custom2/',
-          '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3/'
-        ]"
+    - name: Change shell to zsh
+      shell: chsh -s $(which zsh)
       become: no
-      # Register custom keybindings in GNOME
-
-    - name: Add Firefox shortcut
-      shell: |
-        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom1 name 'Open Firefox'
-        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom1 command 'firefox'
-        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom1 binding '<Super>F'
-      become: no
-
-    - name: Add Terminal shortcut
-      shell: |
-        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom2 name 'Open Terminal'
-        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom2 command 'gnome-terminal'
-        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom2 binding '<Super>Enter'
-      become: no
-
-    - name: Add Nautilus shortcut
-      shell: |
-        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom3 name 'Open nautilus'
-        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom3 command 'nautilus'
-        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom3 binding '<Super>D'
+      
+    - name: Install Oh My Zsh
+      shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
       become: no
 
       # Shortcuts:
       # Super + F: Firefox
       # Super + Enter: Terminal (gnome-terminal)
       # Super + D: Nautilus
+
