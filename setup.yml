@@ -24,12 +24,90 @@
 
     - name: Change shell to zsh
       shell: chsh -s $(which zsh)
-      become: no
       
     - name: Install Oh My Zsh
       shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
       become: no
 
+    - name: Set custom keybindings array
+      ansible.builtin.dconf:
+        key: "org.gnome.settings-daemon.plugins.media-keys custom-keybindings"
+        value: |
+          [
+            '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/',
+            '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/',
+            '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/'
+          ]
+      become: no
+
+    - name: Configure Firefox shortcut
+      block:
+        - name: Set Firefox name
+          ansible.builtin.dconf:
+            path: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
+            key: "name"
+            value: "'Open Firefox'"
+            become: no
+
+        - name: Set Firefox command
+          ansible.builtin.dconf:
+            path: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
+            key: "command"
+            value: "'firefox'"
+            become: no
+
+        - name: Set Firefox binding
+          ansible.builtin.dconf:
+            path: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
+            key: "binding"
+            value: "'<Super>F'"
+            become: no
+
+    - name: Configure Terminal shortcut
+      block:
+        - name: Set Terminal name
+          ansible.builtin.dconf:
+            path: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
+            key: "name"
+            value: "'Open Terminal'"
+            become: no
+
+        - name: Set Terminal command
+          ansible.builtin.dconf:
+            path: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
+            key: "command"
+            value: "'gnome-terminal'"
+            become: no
+
+        - name: Set Terminal binding
+          ansible.builtin.dconf:
+            path: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
+            key: "binding"
+            value: "'<Super>Enter'"
+            become: no
+
+    - name: Configure Nautilus shortcut
+      block:
+        - name: Set Nautilus name
+          ansible.builtin.dconf:
+            path: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/"
+            key: "name"
+            value: "'Open Nautilus'"
+            become: no
+
+        - name: Set Nautilus command
+          ansible.builtin.dconf:
+            path: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/"
+            key: "command"
+            value: "'nautilus'"
+            become: no
+
+        - name: Set Nautilus binding
+          ansible.builtin.dconf:
+            path: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/"
+            key: "binding"
+            value: "'<Super>D'"
+            become: no
       # Shortcuts:
       # Super + F: Firefox
       # Super + Enter: Terminal (gnome-terminal)
